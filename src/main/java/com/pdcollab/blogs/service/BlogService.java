@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Service
 public class BlogService {
     private final BlogRepository blogRepository;
@@ -14,7 +16,10 @@ public class BlogService {
     @Autowired
     public BlogService(BlogRepository blogRepository) {
         this.blogRepository = blogRepository;
+    }
 
+    public List<Blog> getAllBlogs() {
+        return blogRepository.findAll();
     }
 
     public Blog createBlog(Blog blog) {

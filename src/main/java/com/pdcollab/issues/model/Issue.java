@@ -1,4 +1,4 @@
-package com.pdcollab.blogs.model;
+package com.pdcollab.issues.model;
 
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "blogs")
-public class Blog {
+@Table(name = "issues")
+public class Issue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -15,10 +15,6 @@ public class Blog {
     private String title;
     @Column(name = "content")
     private String content;
-
-    @Column(name = "author")
-    private String author;
-
     @Column(name = "date")
     private Date date;
 
@@ -43,7 +39,7 @@ public class Blog {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {
@@ -58,14 +54,6 @@ public class Blog {
         this.content = content;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -73,5 +61,4 @@ public class Blog {
     public void setDate(Date date) {
         this.date = date;
     }
-
 }

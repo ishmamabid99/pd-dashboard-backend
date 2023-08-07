@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/blogs")
 public class BlogController {
@@ -15,6 +17,12 @@ public class BlogController {
     @Autowired
     public BlogController(BlogService blogService) {
         this.blogService = blogService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Blog>> getAllBlogs() {
+        List<Blog> allBlogs = blogService.getAllBlogs();
+        return new ResponseEntity<>(allBlogs, HttpStatus.OK);
     }
 
     @PostMapping
