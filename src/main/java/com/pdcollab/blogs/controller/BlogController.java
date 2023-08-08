@@ -25,10 +25,26 @@ public class BlogController {
         return new ResponseEntity<>(allBlogs, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
-        Blog createdBlog = blogService.createBlog(blog);
-        return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
+    @PostMapping("/{userId}/users")
+    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestBody Blog blog) {
+        try {
+            Blog createdBlog = blogService.createBlogForUser(userId, blog);
+            return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
+        } catch (Exception E) {
+            System.out.println(E);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{userId}/users")
+    public ResponseEntity<List<Blog>> getBlogByUsers(@PathVariable Long userId) {
+        try {
+            List<Blog> blogs = blogService.getBlogByUser(userId);
+            return new ResponseEntity<>(blogs, HttpStatus.OK);
+        } catch (Exception E) {
+            System.out.println(E);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")
@@ -37,6 +53,17 @@ public class BlogController {
             Blog blog = blogService.getBlogById(id);
             return new ResponseEntity<>(blog, HttpStatus.OK);
         } catch (Exception E) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody Blog blog) {
+        try {
+            Blog updatedBlog = blogService.updateBlog(id, blog);
+            return new ResponseEntity<>(updatedBlog, HttpStatus.OK);
+        } catch (Exception E) {
+            System.out.println(E);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

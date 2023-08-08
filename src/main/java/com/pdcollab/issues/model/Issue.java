@@ -1,5 +1,6 @@
 package com.pdcollab.issues.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
 
@@ -18,6 +19,11 @@ public class Issue {
     @Column(name = "date")
     private Date date;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user;
+
     public User getUser() {
         return user;
     }
@@ -25,10 +31,6 @@ public class Issue {
     public void setUser(User user) {
         this.user = user;
     }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     public long getId() {
         return id;

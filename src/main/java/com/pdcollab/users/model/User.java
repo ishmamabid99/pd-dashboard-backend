@@ -1,7 +1,9 @@
 package com.pdcollab.users.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pdcollab.blogs.model.Blog;
 import com.pdcollab.issues.model.Issue;
+import com.pdcollab.tasks.model.Task;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -23,10 +25,24 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Blog> blogs;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Issue> issues;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Task> tasks;
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 
     public Long getId() {
         return id;
