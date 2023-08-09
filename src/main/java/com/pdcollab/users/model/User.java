@@ -3,6 +3,7 @@ package com.pdcollab.users.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pdcollab.blogs.model.Blog;
 import com.pdcollab.issues.model.Issue;
+import com.pdcollab.learnings.model.UserTagMapping;
 import com.pdcollab.tasks.model.Task;
 import jakarta.persistence.*;
 
@@ -35,6 +36,18 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Task> tasks;
+
+    @OneToMany
+    @JsonManagedReference
+    private List<UserTagMapping> userTagMappings;
+
+    public List<UserTagMapping> getUserTagMappings() {
+        return userTagMappings;
+    }
+
+    public void setUserTagMappings(List<UserTagMapping> userTagMappings) {
+        this.userTagMappings = userTagMappings;
+    }
 
     public List<Task> getTasks() {
         return tasks;

@@ -1,8 +1,10 @@
 package com.pdcollab.learnings.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tags")
@@ -11,11 +13,8 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title", unique = true)
     private String title;
-
-    @Column(name = "date")
-    private Date date;
 
     public long getId() {
         return id;
@@ -31,13 +30,5 @@ public class Tag {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 }
