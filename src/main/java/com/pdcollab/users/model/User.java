@@ -37,7 +37,7 @@ public class User {
     @JsonManagedReference
     private List<Task> tasks;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<UserTagMapping> userTagMappings;
 

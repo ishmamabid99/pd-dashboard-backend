@@ -1,17 +1,15 @@
 package com.pdcollab.learnings.utils;
 
-import com.pdcollab.learnings.model.Tag;
-
-public class TagCreationRequest {
-    private Tag tag;
+public class TagBody {
+    private String tagName;
     private String proficiency;
 
-    public Tag getTag() {
-        return tag;
+    public String getTagName() {
+        return tagName;
     }
 
-    public void setTag(Tag tag) {
-        this.tag = tag;
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 
     public String getProficiency() {

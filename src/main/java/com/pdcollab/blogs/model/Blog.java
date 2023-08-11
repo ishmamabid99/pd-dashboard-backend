@@ -1,10 +1,13 @@
 package com.pdcollab.blogs.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pdcollab.comments.model.BlogComment;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "blogs")
@@ -32,6 +35,38 @@ public class Blog {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<BlogComment> blogComments;
+
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<BlogImage> images;
+
+    public List<BlogImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<BlogImage> images) {
+        this.images = images;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public List<BlogComment> getBlogComments() {
+        return blogComments;
+    }
+
+    public void setBlogComments(List<BlogComment> blogComments) {
+        this.blogComments = blogComments;
+    }
 
     public long getId() {
         return id;

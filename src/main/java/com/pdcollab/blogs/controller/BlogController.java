@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,9 +27,11 @@ public class BlogController {
     }
 
     @PostMapping("/{userId}/users")
-    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestBody Blog blog) {
+    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestParam String title,
+                                           @RequestParam String contemt,
+                                           @RequestParam("images") MultipartFile[] imageFiles) {
         try {
-            Blog createdBlog = blogService.createBlogForUser(userId, blog);
+            Blog createdBlog = blogService.createBlogForUser(userId, title, contemt, imageFiles);
             return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
         } catch (Exception E) {
             System.out.println(E);

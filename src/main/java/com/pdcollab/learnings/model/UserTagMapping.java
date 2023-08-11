@@ -1,38 +1,40 @@
 package com.pdcollab.learnings.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "user_tag_mapping")
+@Table(name = "user_tag_mappings")
 public class UserTagMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(name = "tagname")
+    private String tagName;
+
     @Column(name = "proficiency")
     private String proficiency;
 
-    @Column(name = "tag_name")
-    private String tagName;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "tag_id")
-    @JsonBackReference
-    private Tag tag;
+    public long getId() {
+        return id;
+    }
 
-    public String getTagName() {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getTagname() {
         return tagName;
     }
 
-    public void setTagName(String tagName) {
+    public void setTagname(String tagName) {
         this.tagName = tagName;
     }
 
@@ -50,13 +52,5 @@ public class UserTagMapping {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Tag getTag() {
-        return tag;
-    }
-
-    public void setTag(Tag tag) {
-        this.tag = tag;
     }
 }

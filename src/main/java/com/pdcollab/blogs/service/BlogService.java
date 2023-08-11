@@ -1,20 +1,32 @@
 package com.pdcollab.blogs.service;
 
 import com.pdcollab.blogs.model.Blog;
+import com.pdcollab.blogs.model.BlogImage;
 import com.pdcollab.blogs.repository.BlogRepository;
 import com.pdcollab.users.model.User;
 import com.pdcollab.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class BlogService {
+    @Value("${upload.base-dir}")
+    private String baseUploadDir;
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
 
@@ -30,9 +42,26 @@ public class BlogService {
     }
 
     @Transactional
-    public Blog createBlogForUser(Long userId, Blog blog) {
+    public Blog createBlogForUser(Long userId, String title, String content, MultipartFile[] imageFiles) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User Not Found!!!"));
+        Blog blog = new Blog();
+        blog.setTitle(title);
+        blog.setContent(content);
         blog.setUser(user);
+        Date date = new Date();
+        blog.setDate(date);
+        if (imageFiles != null) {
+            List<BlogImage> blogImages = new LinkedList<>();
+            for (MultipartFile imageFile : imageFiles) {
+                BlogImage blogImage = new BlogImage();
+                blogImage.setBlog(blog);
+                blogImage.setFilename(imageFile.getOriginalFilename());
+                Path filePath = Paths.get(baseUploadDir, imageFile.getOriginalFilename());
+                Files.write(filePath, imageFile.getBytes());
+                blogImages.add(blogImage);
+            }
+            blog.setImages(blogImages);
+        }
         return blogRepository.save(blog);
     }
 

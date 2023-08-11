@@ -1,10 +1,13 @@
 package com.pdcollab.issues.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pdcollab.comments.model.IssueComment;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "issues")
@@ -23,6 +26,18 @@ public class Issue {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<IssueComment> issueComments;
+
+    public List<IssueComment> getIssueComments() {
+        return issueComments;
+    }
+
+    public void setIssueComments(List<IssueComment> issueComments) {
+        this.issueComments = issueComments;
+    }
 
     public User getUser() {
         return user;

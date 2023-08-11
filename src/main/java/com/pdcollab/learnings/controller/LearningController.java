@@ -1,9 +1,8 @@
 package com.pdcollab.learnings.controller;
 
-import com.pdcollab.learnings.model.Tag;
 import com.pdcollab.learnings.model.UserTagMapping;
 import com.pdcollab.learnings.service.LearningService;
-import com.pdcollab.learnings.utils.TagCreationRequest;
+import com.pdcollab.learnings.utils.TagBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,33 +20,25 @@ public class LearningController {
         this.learningService = learningService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Tag>> getAllTags() {
-        return new ResponseEntity<>(learningService.getAllTags(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{userId}/users")
-    public ResponseEntity<List<UserTagMapping>> getUsersTags(@PathVariable long userId) {
+    @PostMapping("/{userId}")
+    public ResponseEntity<List<UserTagMapping>> createUserMapping(@PathVariable long userId, @RequestBody List<TagBody> tags) {
         try {
-            List<UserTagMapping> userTagMappingList = learningService.getUsersTag(userId);
+            List<UserTagMapping> userTagMappingList = learningService.createUserTagMapping(userId, tags);
             return new ResponseEntity<>(userTagMappingList, HttpStatus.OK);
-        } catch (Exception E) {
-            System.out.println(E);
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.METHOD_FAILURE);
         }
     }
 
-    @PostMapping("/{userId}/users")
-    public ResponseEntity<UserTagMapping> createNewTag(@PathVariable long userId, @RequestBody TagCreationRequest tagCreationRequest) {
-        try {
-            Tag tag = tagCreationRequest.getTag();
-            String proficiency = tagCreationRequest.getProficiency();
-            UserTagMapping createdUserTagMapping = learningService.createNewTag(userId, tag, proficiency);
-            return new ResponseEntity<>(createdUserTagMapping, HttpStatus.CREATED);
-        } catch (Exception E) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<UserTagMapping>> getUserTagMappings(@PathVariable long userId) {
+        return new ResponseEntity<>(learningService.getUserTagMappingsWithDefault(userId), HttpStatus.OK);
+    }
 
-//            System.out.println(E);
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-        }
+    @GetMapping
+    public ResponseEntity<List<UserTagMapping>> getAllTagMappings() {
+
+        return new ResponseEntity<>(learningService.getAllUserTagMappings(), HttpStatus.OK);
     }
 }

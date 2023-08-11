@@ -1,10 +1,6 @@
 package com.pdcollab.learnings.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "tags")
@@ -31,4 +27,5 @@ public class Tag {
     public void setTitle(String title) {
         this.title = title;
     }
+
 }
