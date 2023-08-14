@@ -2,6 +2,7 @@ package com.pdcollab.blogs.service;
 
 import com.pdcollab.blogs.model.Blog;
 import com.pdcollab.blogs.model.BlogImage;
+import com.pdcollab.blogs.repository.BlogImageRepository;
 import com.pdcollab.blogs.repository.BlogRepository;
 import com.pdcollab.users.model.User;
 import com.pdcollab.users.repository.UserRepository;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.LinkedList;
@@ -30,10 +33,13 @@ public class BlogService {
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
 
+    private final BlogImageRepository blogImageRepository;
+
     @Autowired
-    public BlogService(BlogRepository blogRepository, UserRepository userRepository) {
+    public BlogService(BlogRepository blogRepository, UserRepository userRepository, BlogImageRepository blogImageRepository) {
         this.blogRepository = blogRepository;
         this.userRepository = userRepository;
+        this.blogImageRepository = blogImageRepository;
 
     }
 
@@ -56,14 +62,19 @@ public class BlogService {
                 BlogImage blogImage = new BlogImage();
                 blogImage.setBlog(blog);
                 blogImage.setFilename(imageFile.getOriginalFilename());
-                Path filePath = Paths.get(baseUploadDir, imageFile.getOriginalFilename());
-                Files.write(filePath, imageFile.getBytes());
+                File directory = new File(baseUploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+                String filePath = baseUploadDir + "/" + imageFile.getOriginalFilename();
+                Files.copy(imageFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
                 blogImages.add(blogImage);
             }
             blog.setImages(blogImages);
         }
         return blogRepository.save(blog);
     }
+
 
     public Blog getBlogById(Long id) {
         return blogRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Blog not found!!!"));

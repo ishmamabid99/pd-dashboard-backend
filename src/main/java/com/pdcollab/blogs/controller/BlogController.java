@@ -2,13 +2,17 @@ package com.pdcollab.blogs.controller;
 
 import com.pdcollab.blogs.model.Blog;
 import com.pdcollab.blogs.service.BlogService;
+import com.pdcollab.blogs.utils.BlogRequestBody;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/blogs")
@@ -26,16 +30,19 @@ public class BlogController {
         return new ResponseEntity<>(allBlogs, HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/users")
-    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestParam String title,
-                                           @RequestParam String contemt,
-                                           @RequestParam("images") MultipartFile[] imageFiles) {
+    @PostMapping(value = "/{userId}/users", consumes = {
+            "multipart/form-data"
+    }, headers = "Content-Type= multipart/form-data")
+    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestParam String title, @RequestParam String content, @RequestParam("images") MultipartFile[] files) {
+        System.out.println(files.length);
+        System.out.println(title + " " + content);
+//        return new ResponseEntity<>(HttpStatus.OK);
         try {
-            Blog createdBlog = blogService.createBlogForUser(userId, title, contemt, imageFiles);
+            Blog createdBlog = blogService.createBlogForUser(userId, title,content, files);
             return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
-        } catch (Exception E) {
-            System.out.println(E);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Throwable E) {
+            throw new MultipartException("Could not access multipart servlet request", E);
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

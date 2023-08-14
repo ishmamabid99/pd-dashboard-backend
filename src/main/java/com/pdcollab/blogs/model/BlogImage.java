@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table(name = "blog_images")
 public class BlogImage {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
