@@ -40,7 +40,6 @@ public class BlogService {
         this.blogRepository = blogRepository;
         this.userRepository = userRepository;
         this.blogImageRepository = blogImageRepository;
-
     }
 
     public List<Blog> getAllBlogs() {
@@ -69,6 +68,7 @@ public class BlogService {
                 String filePath = baseUploadDir + "/" + imageFile.getOriginalFilename();
                 Files.copy(imageFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
                 blogImages.add(blogImage);
+                blogImageRepository.save(blogImage);
             }
             blog.setImages(blogImages);
         }
