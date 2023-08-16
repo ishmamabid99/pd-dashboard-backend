@@ -1,8 +1,12 @@
 package com.pdcollab.tasks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pdcollab.learnings.model.Tag;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
@@ -24,6 +28,18 @@ public class Task {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "tags", joinColumns = {@JoinColumn(name = "task_id"),}, inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    private List<Tag> tags;
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 
     public long getId() {
         return id;

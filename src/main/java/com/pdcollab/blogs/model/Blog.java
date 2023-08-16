@@ -3,6 +3,7 @@ package com.pdcollab.blogs.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pdcollab.comments.model.BlogComment;
+import com.pdcollab.learnings.model.Tag;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
 
@@ -43,6 +44,18 @@ public class Blog {
     @OneToMany(mappedBy = "blog", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<BlogImage> images;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "tags", joinColumns = {@JoinColumn(name = "blog_id"),}, inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    private List<Tag> tags;
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 
     public List<BlogImage> getImages() {
         return images;

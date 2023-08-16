@@ -3,8 +3,10 @@ package com.pdcollab.blogs.controller;
 import com.pdcollab.blogs.model.Blog;
 import com.pdcollab.blogs.service.BlogService;
 import com.pdcollab.blogs.utils.BlogRequestBody;
+import com.pdcollab.learnings.model.Tag;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,16 +35,25 @@ public class BlogController {
     @PostMapping(value = "/{userId}/users", consumes = {
             "multipart/form-data"
     }, headers = "Content-Type= multipart/form-data")
-    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestParam String title, @RequestParam String content, @RequestParam("images") MultipartFile[] files) {
+    public ResponseEntity<Blog> createBlog(@PathVariable long userId, @RequestParam String title, @RequestParam String content, @RequestParam List<Tag> tags, @RequestParam("images") MultipartFile[] files) {
         System.out.println(files.length);
         System.out.println(title + " " + content);
 //        return new ResponseEntity<>(HttpStatus.OK);
         try {
-            Blog createdBlog = blogService.createBlogForUser(userId, title,content, files);
+            Blog createdBlog = blogService.createBlogForUser(userId, title, content, tags, files);
             return new ResponseEntity<>(createdBlog, HttpStatus.CREATED);
         } catch (Throwable E) {
             throw new MultipartException("Could not access multipart servlet request", E);
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/images/{fileName}")
+    public ResponseEntity<UrlResource> serveFile(@PathVariable String fileName) {
+        try {
+            return new ResponseEntity<>(blogService.getImageResource(fileName), HttpStatus.OK);
+        } catch (Exception E) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -1,26 +1,44 @@
 package com.pdcollab.issues.service;
 
 import com.pdcollab.issues.model.Issue;
+import com.pdcollab.issues.model.IssueImage;
+import com.pdcollab.issues.repository.IssueImageRepository;
 import com.pdcollab.issues.repository.IssueRepository;
 import com.pdcollab.users.model.User;
 import com.pdcollab.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class IssueService {
 
+    @Value("${upload.base-dir}")
+    private String baseUploadDir;
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
 
+    private final IssueImageRepository issueImageRepository;
+
     @Autowired
-    public IssueService(IssueRepository issueRepository, UserRepository userRepository) {
+    public IssueService(IssueRepository issueRepository, UserRepository userRepository, IssueImageRepository issueImageRepository) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
+        this.issueImageRepository = issueImageRepository;
     }
 
 
@@ -29,10 +47,40 @@ public class IssueService {
     }
 
     @Transactional
-    public Issue createIssueForUser(long userId, Issue issue) {
+    public Issue createIssueForUser(long userId, String title, String content, MultipartFile[] imageFiles) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found!!!"));
+        Issue issue = new Issue();
+        issue.setTitle(title);
+        issue.setContent(content);
+        Date date = new Date();
+        issue.setDate(date);
         issue.setUser(user);
+        if (imageFiles != null) {
+            List<IssueImage> issueImages = new LinkedList<>();
+            for (MultipartFile imageFile : imageFiles) {
+                IssueImage issueImage = new IssueImage();
+                issueImage.setIssue(issue);
+                issueImage.setFileName(imageFile.getOriginalFilename());
+                File directory = new File(baseUploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+                String filePath = baseUploadDir + "/" + imageFile.getOriginalFilename();
+                Files.copy(imageFile.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                issueImages.add(issueImage);
+                issueImageRepository.save(issueImage);
+            }
+            issue.setIssueImages(issueImages);
+        }
         return issueRepository.save(issue);
+    }
+
+    public UrlResource getImageResource(String fileName) throws IOException {
+        Path file = Paths.get(baseUploadDir).resolve(fileName);
+        UrlResource resource = new UrlResource(file.toUri());
+        if (resource.exists() && resource.isReadable()) {
+            return resource;
+        } else return null;
     }
 
     public List<Issue> getIssueByUser(long userId) {
