@@ -1,11 +1,11 @@
 package com.pdcollab.tasks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pdcollab.learnings.model.Tag;
 import com.pdcollab.users.model.User;
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,7 +22,7 @@ public class Task {
     private String content;
 
     @Column(name = "date")
-    private String date;
+    private Date date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -30,7 +30,7 @@ public class Task {
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "tags", joinColumns = {@JoinColumn(name = "task_id"),}, inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    @JoinTable(name = "task_tags", joinColumns = {@JoinColumn(name = "task_id"),}, inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private List<Tag> tags;
 
     public List<Tag> getTags() {
@@ -65,11 +65,11 @@ public class Task {
         this.content = content;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

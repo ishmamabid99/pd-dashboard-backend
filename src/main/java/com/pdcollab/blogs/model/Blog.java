@@ -46,7 +46,7 @@ public class Blog {
     private List<BlogImage> images;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "tags", joinColumns = {@JoinColumn(name = "blog_id"),}, inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    @JoinTable(name = "blog_tags", joinColumns = {@JoinColumn(name = "blog_id"),}, inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private List<Tag> tags;
 
     public List<Tag> getTags() {

@@ -4,6 +4,8 @@ import com.pdcollab.issues.model.Issue;
 import com.pdcollab.issues.model.IssueImage;
 import com.pdcollab.issues.repository.IssueImageRepository;
 import com.pdcollab.issues.repository.IssueRepository;
+import com.pdcollab.learnings.model.Tag;
+import com.pdcollab.learnings.repository.TagRepository;
 import com.pdcollab.users.model.User;
 import com.pdcollab.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,11 +36,14 @@ public class IssueService {
 
     private final IssueImageRepository issueImageRepository;
 
+    private final TagRepository tagRepository;
+
     @Autowired
-    public IssueService(IssueRepository issueRepository, UserRepository userRepository, IssueImageRepository issueImageRepository) {
+    public IssueService(IssueRepository issueRepository, UserRepository userRepository, IssueImageRepository issueImageRepository, TagRepository tagRepository) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
         this.issueImageRepository = issueImageRepository;
+        this.tagRepository = tagRepository;
     }
 
 
@@ -47,7 +52,7 @@ public class IssueService {
     }
 
     @Transactional
-    public Issue createIssueForUser(long userId, String title, String content, MultipartFile[] imageFiles) throws IOException {
+    public Issue createIssueForUser(long userId, String title, String content, List<String> tags, MultipartFile[] imageFiles) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found!!!"));
         Issue issue = new Issue();
         issue.setTitle(title);
@@ -72,6 +77,26 @@ public class IssueService {
             }
             issue.setIssueImages(issueImages);
         }
+        issueRepository.save(issue);
+        List<Tag> newTags = null;
+        for (String tagName : tags) {
+            Tag existingTag = tagRepository.findTagByTitle(tagName);
+            newTags = new LinkedList<>();
+            if (existingTag == null || existingTag.getTitle().isEmpty()) {
+                Tag newTag = new Tag();
+                newTag.setTitle(tagName);
+                List<Issue> issues = new LinkedList<>();
+                issues.add(issue);
+                newTag.setIssues(issues);
+                tagRepository.save(newTag);
+            } else {
+                List<Issue> issues = existingTag.getIssues();
+                issues.add(issue);
+                tagRepository.save(existingTag);
+                newTags.add(existingTag);
+            }
+        }
+        issue.setTags(newTags);
         return issueRepository.save(issue);
     }
 
@@ -88,10 +113,10 @@ public class IssueService {
         return user.getIssues();
     }
 
-    public Issue updateIssue(long id, Issue issue) {
+    public Issue updateIssue(long id, String title, String content) {
         Issue existingIssue = issueRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
-        existingIssue.setTitle(issue.getTitle());
-        existingIssue.setContent(issue.getContent());
+        existingIssue.setTitle(title);
+        existingIssue.setContent(content);
         return issueRepository.save(existingIssue);
     }
 

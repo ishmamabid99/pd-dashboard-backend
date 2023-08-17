@@ -1,9 +1,9 @@
 package com.pdcollab.learnings.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pdcollab.blogs.model.Blog;
 import com.pdcollab.issues.model.Issue;
+import com.pdcollab.tasks.model.Task;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -24,25 +24,25 @@ public class Tag {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tags")
     @JsonIgnore
-    private List<Blog> issues;
+    private List<Issue> issues;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "tags")
     @JsonIgnore
-    private List<Blog> tasks;
+    private List<Task> tasks;
 
-    public List<Blog> getIssues() {
+    public List<Issue> getIssues() {
         return issues;
     }
 
-    public void setIssues(List<Blog> issues) {
+    public void setIssues(List<Issue> issues) {
         this.issues = issues;
     }
 
-    public List<Blog> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<Blog> tasks) {
+    public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
 

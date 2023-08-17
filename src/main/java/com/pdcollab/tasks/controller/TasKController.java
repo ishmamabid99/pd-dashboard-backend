@@ -28,32 +28,32 @@ public class TasKController {
     public ResponseEntity<List<Task>> getTaskByUser(@PathVariable long userId) {
         try {
             List<Task> tasks = taskService.getTaskByUser(userId);
-            return new ResponseEntity<>(tasks, HttpStatus.FOUND);
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
         } catch (Exception E) {
             System.out.println(E);
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/{userId}/users")
-    public ResponseEntity<Task> createTask(@PathVariable long userId, @RequestBody Task task) {
+    public ResponseEntity<Task> createTask(@PathVariable long userId, @RequestParam String title, @RequestParam String content, @RequestParam List<String> tags) {
         try {
-            Task createdTask = taskService.createTaskForUser(userId, task);
+            Task createdTask = taskService.createTaskForUser(userId, title, content, tags);
             return new ResponseEntity<>(createdTask, HttpStatus.OK);
         } catch (Exception E) {
             System.out.println(E);
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable long id, @RequestBody Task task) {
+    public ResponseEntity<Task> updateTask(@PathVariable long id, @RequestParam String title, @RequestParam String content) {
         try {
-            Task updatedTask = taskService.updateTask(id, task);
+            Task updatedTask = taskService.updateTask(id, title, content);
             return new ResponseEntity<>(updatedTask, HttpStatus.OK);
         } catch (Exception E) {
             System.out.println(E);
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

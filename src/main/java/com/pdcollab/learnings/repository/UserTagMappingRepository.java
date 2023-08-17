@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserTagMappingRepository extends JpaRepository<UserTagMapping, Long> {
-    public UserTagMapping findUserTagMappingByTagName(String tagName);
 
     public UserTagMapping findUserTagMappingByUserAndTagName(User user, String tagName);
 }

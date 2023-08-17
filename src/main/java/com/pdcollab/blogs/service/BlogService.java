@@ -8,7 +8,6 @@ import com.pdcollab.learnings.model.Tag;
 import com.pdcollab.learnings.repository.TagRepository;
 import com.pdcollab.users.model.User;
 import com.pdcollab.users.repository.UserRepository;
-import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class BlogService {
     }
 
     @Transactional
-    public Blog createBlogForUser(Long userId, String title, String content, List<Tag> tags, MultipartFile[] imageFiles) throws IOException {
+    public Blog createBlogForUser(Long userId, String title, String content, List<String> tags, MultipartFile[] imageFiles) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User Not Found!!!"));
         Blog blog = new Blog();
         blog.setTitle(title);
@@ -76,22 +75,30 @@ public class BlogService {
             }
             blog.setImages(blogImages);
         }
+        blogRepository.save(blog);
+        System.out.println(blog.getId());
         List<Tag> newTags = new LinkedList<>();
-        for (Tag tag : tags) {
-            System.out.println(tag.getTitle());
-            Tag existingTag = tagRepository.findTagByTitle(tag.getTitle());
+        for (String tagName : tags) {
+            System.out.println(tagName);
+            Tag existingTag = tagRepository.findTagByTitle(tagName);
             if (existingTag == null || existingTag.getTitle().isEmpty()) {
                 Tag newtag = new Tag();
-                newtag.setTitle(tag.getTitle());
-                List<Blog> blogs = newtag.getBlogs();
+                newtag.setTitle(tagName);
+                List<Blog> blogs = new LinkedList<>();
                 blogs.add(blog);
-                newTags.add(tagRepository.save(newtag));
+                newtag.setBlogs(blogs);
+                tagRepository.save(newtag);
+                newTags.add(newtag);
             } else {
+                List<Blog> blogs = existingTag.getBlogs();
+                blogs.add(blog);
+                tagRepository.save(existingTag);
                 newTags.add(existingTag);
             }
         }
         blog.setTags(newTags);
         return blogRepository.save(blog);
+
     }
 
     public UrlResource getImageResource(String filename) throws IOException {
@@ -113,10 +120,10 @@ public class BlogService {
         return user.getBlogs();
     }
 
-    public Blog updateBlog(Long id, Blog blog) {
+    public Blog updateBlog(Long id, String title, String content) {
         Blog existingBlog = blogRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Blog not found!!!"));
-        existingBlog.setContent(blog.getContent());
-        existingBlog.setTitle(blog.getTitle());
+        existingBlog.setTitle(title);
+        existingBlog.setContent(content);
         return blogRepository.save(existingBlog);
     }
 }

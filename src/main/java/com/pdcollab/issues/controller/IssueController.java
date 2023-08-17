@@ -28,9 +28,9 @@ public class IssueController {
     }
 
     @PostMapping("/{userId}/users")
-    public ResponseEntity<Issue> createIssueForUser(@PathVariable Long userId, @RequestParam String title, @RequestParam String content, @RequestParam("images") MultipartFile[] files) {
+    public ResponseEntity<Issue> createIssueForUser(@PathVariable Long userId, @RequestParam String title, @RequestParam String content, @RequestParam List<String> tags, @RequestParam("images") MultipartFile[] files) {
         try {
-            Issue createdIssue = issueService.createIssueForUser(userId, title, content, files);
+            Issue createdIssue = issueService.createIssueForUser(userId, title, content, tags, files);
             return new ResponseEntity<>(createdIssue, HttpStatus.CREATED);
         } catch (Exception E) {
             System.out.println(E);
@@ -59,9 +59,9 @@ public class IssueController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Issue> updateIssue(@PathVariable long id, @RequestBody Issue issue) {
+    public ResponseEntity<Issue> updateIssue(@PathVariable long id, @RequestParam String title, @RequestParam String content) {
         try {
-            Issue updatedIssue = issueService.updateIssue(id, issue);
+            Issue updatedIssue = issueService.updateIssue(id, title, content);
             return new ResponseEntity<>(updatedIssue, HttpStatus.OK);
         } catch (Exception E) {
             System.out.println(E);
