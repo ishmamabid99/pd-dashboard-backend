@@ -41,4 +41,15 @@ public class CommentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/blog/{commentId}/pin")
+    public ResponseEntity<BlogComment> savePinnedBlogComment(@PathVariable long commentId) {
+        try {
+            BlogComment savedBlogComment = commentService.pinBlogComment(commentId);
+            return new ResponseEntity<>(savedBlogComment, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

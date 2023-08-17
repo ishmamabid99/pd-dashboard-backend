@@ -36,7 +36,7 @@ public class SearchController {
     }
 
     @GetMapping("/issues/")
-    public ResponseEntity<List<Issue>> SearchIssues(@RequestParam List<String> tagNames) {
+    public ResponseEntity<List<Issue>> SearchIssues(@RequestParam("tags") List<String> tagNames) {
         try {
             List<Issue> issues = searchService.getIssues(tagNames);
             return new ResponseEntity<>(issues, HttpStatus.OK);
@@ -47,7 +47,7 @@ public class SearchController {
     }
 
     @GetMapping("/tasks/")
-    public ResponseEntity<List<Task>> searchTasks(@RequestParam List<String> tagNames) {
+    public ResponseEntity<List<Task>> searchTasks(@RequestParam("tags") List<String> tagNames) {
         try {
             List<Task> tasks = searchService.getTasks(tagNames);
             return new ResponseEntity<>(tasks, HttpStatus.OK);

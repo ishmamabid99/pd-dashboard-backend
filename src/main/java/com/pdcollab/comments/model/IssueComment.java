@@ -23,10 +23,20 @@ public class IssueComment {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "pinned")
+    private Boolean isPinned;
     @ManyToOne
     @JoinColumn(name = "issue_id")
     @JsonBackReference
     private Issue issue;
+
+    public Boolean getPinned() {
+        return isPinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        isPinned = pinned;
+    }
 
     public String getAuthor() {
         return author;

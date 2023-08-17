@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BlogCommentRepository extends JpaRepository<BlogComment, Long> {
-
+    public BlogComment findBlogCommentByIsPinnedTrue();
 }

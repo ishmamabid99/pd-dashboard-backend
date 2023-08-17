@@ -39,10 +39,23 @@ public class CommentService {
         return issueCommentRepository.save(issueComment);
     }
 
+
     public BlogComment saveBlogComment(long blogId, BlogComment blogComment) {
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new EntityNotFoundException("Blog not found!!!"));
         blogComment.setCreatedAt(LocalDateTime.now());
         blogComment.setBlog(blog);
         return blogCommentRepository.save(blogComment);
+    }
+
+    public BlogComment pinBlogComment(long commentId) {
+        BlogComment existingBlogComment = blogCommentRepository.findBlogCommentByIsPinnedTrue();
+        if (existingBlogComment != null) {
+            existingBlogComment.setPinned(false);
+            blogCommentRepository.save(existingBlogComment);
+        }
+        BlogComment blogComment = blogCommentRepository.findById(commentId).orElseThrow(() -> new EntityNotFoundException("Blog comment not found!!!"));
+        blogComment.setPinned(true);
+        return blogCommentRepository.save(blogComment);
+
     }
 }

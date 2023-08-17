@@ -23,10 +23,21 @@ public class BlogComment {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "pinned")
+    private Boolean isPinned;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_id")
     @JsonBackReference
     private Blog blog;
+
+    public Boolean getPinned() {
+        return isPinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        isPinned = pinned;
+    }
 
     public String getAuthor() {
         return author;
