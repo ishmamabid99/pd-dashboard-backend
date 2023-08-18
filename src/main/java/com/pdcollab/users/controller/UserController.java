@@ -50,4 +50,13 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestParam String username, @RequestParam String password) {
+        try {
+            return new ResponseEntity<>(userService.loginUser(username, password), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

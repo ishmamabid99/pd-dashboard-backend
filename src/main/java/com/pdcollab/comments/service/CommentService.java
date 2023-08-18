@@ -40,6 +40,18 @@ public class CommentService {
     }
 
 
+    public IssueComment pinIssueComment(long commentId) {
+        IssueComment existingIssueComment = issueCommentRepository.findIssueCommentByIsPinnedTrue();
+        if (existingIssueComment != null) {
+            existingIssueComment.setPinned(false);
+            issueCommentRepository.save(existingIssueComment);
+        }
+        IssueComment issueComment = issueCommentRepository.findById(commentId).orElseThrow(() -> new EntityNotFoundException("Issue comment not found!!!!"));
+        issueComment.setPinned(true);
+        return issueCommentRepository.save(issueComment);
+
+    }
+
     public BlogComment saveBlogComment(long blogId, BlogComment blogComment) {
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new EntityNotFoundException("Blog not found!!!"));
         blogComment.setCreatedAt(LocalDateTime.now());
@@ -58,4 +70,5 @@ public class CommentService {
         return blogCommentRepository.save(blogComment);
 
     }
+
 }

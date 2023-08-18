@@ -52,4 +52,15 @@ public class CommentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/issue/{commentId}/pin")
+    public ResponseEntity<IssueComment> savePinnedIssueComment(@PathVariable long commentId) {
+        try {
+            IssueComment savedIssueComment = commentService.pinIssueComment(commentId);
+            return new ResponseEntity<>(savedIssueComment, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
