@@ -2,7 +2,7 @@ package com.pdcollab.tasks.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pdcollab.learnings.model.Tag;
-import com.pdcollab.users.model.User;
+import com.pdcollab.auth.model.User;
 import jakarta.persistence.*;
 
 import java.util.Date;

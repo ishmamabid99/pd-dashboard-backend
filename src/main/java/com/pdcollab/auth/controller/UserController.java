@@ -1,7 +1,7 @@
-package com.pdcollab.users.controller;
+package com.pdcollab.auth.controller;
 
-import com.pdcollab.users.model.User;
-import com.pdcollab.users.service.UserService;
+import com.pdcollab.auth.model.User;
+import com.pdcollab.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

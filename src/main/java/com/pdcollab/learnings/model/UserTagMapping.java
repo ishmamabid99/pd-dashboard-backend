@@ -1,7 +1,7 @@
 package com.pdcollab.learnings.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.pdcollab.users.model.User;
+import com.pdcollab.auth.model.User;
 import jakarta.persistence.*;
 
 @Entity

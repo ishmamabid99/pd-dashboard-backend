@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pdcollab.comments.model.BlogComment;
 import com.pdcollab.learnings.model.Tag;
-import com.pdcollab.users.model.User;
+import com.pdcollab.auth.model.User;
 import jakarta.persistence.*;
 
 import java.util.Date;

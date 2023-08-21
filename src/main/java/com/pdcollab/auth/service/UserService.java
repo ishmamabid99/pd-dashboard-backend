@@ -1,8 +1,7 @@
-package com.pdcollab.users.service;
+package com.pdcollab.auth.service;
 
-import com.pdcollab.users.model.User;
-import com.pdcollab.users.repository.UserRepository;
-import com.pdcollab.utils.SecurityConfig;
+import com.pdcollab.auth.model.User;
+import com.pdcollab.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
