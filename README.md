@@ -5,7 +5,7 @@ This project is Spring boot application for community knowledge sharing. This is
 Install Docker Compose on your machine
 Pull postgres official image from DockerHub
 
-All the commands regarding spin up the container and spring boot applicatin startup are specified in start.sh. Just the script
+All the commands regarding spin up the container and spring boot applicatin startup are specified in start.sh. Just execute the script
 
 # Command
     sudo chmod +x start.sh
